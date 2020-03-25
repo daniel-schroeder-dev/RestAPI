@@ -2,9 +2,11 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const studentModel = new Schema({
+  _id: mongoose.Schema.Types.ObjectId,
   name: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   birthday: {
     type: Date,
@@ -12,7 +14,8 @@ const studentModel = new Schema({
   },
   address: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   zipcode: {
     type: Number,
@@ -24,11 +27,18 @@ const studentModel = new Schema({
   },
   phone: {
     type: Number,
-    required: true
+    required: true,
+    unique: true
   },
 
   email: {
-    type: String
+    type: String,
+    required: true
+  },
+  course: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Course",
+    required: true
   }
 });
 

@@ -2,11 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const courseModel = new Schema({
-  _id: mongoose.Schema.Types.ObjectId,
-  student: { type: mongoose.Schema.Types.ObjectId, ref: "Student" },
   name: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   startdate: {
     type: Date,

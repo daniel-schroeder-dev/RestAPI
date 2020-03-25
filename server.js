@@ -28,8 +28,17 @@ mongoose
 
 app.get("/students", async (req, res, next) => {
   try {
-    const entrries = await student.find();
-    res.json(entrries);
+    await student
+      .find()
+      .populate("course")
+      .select("name birthday address zipcode city phone email")
+      .then(docs => {
+        const response = {
+          count: docs.length,
+          students: docs
+        };
+        res.json(response);
+      });
   } catch (error) {
     console.log(error);
   }
@@ -51,74 +60,145 @@ app.get("/students/:id", async (req, res, next) => {
 });
 
 app.put("/students/:id", async (req, res, next) => {
-  res.status(200).json({
-    message: "updated product"
-  });
-});
-
-app.delete("/students/1", async (req, res, next) => {
-  res.status(200).json({
-    message: "delete product"
-  });
-});
-
-app.post("/students", async (req, res, next) => {
+  const id = req.params.id;
+  const update = {};
+  for (const datas of req.body) {
+    update[datas.updateData] = datas.value;
+  }
   try {
-    const logs = new student(req.body);
-    const entry = await logs.save();
-    res.json(entry);
+    student
+      .update({ _id: id }, { $set: update })
+      .exec()
+      .then(data => {
+        res.json(data);
+      });
   } catch (error) {
-    if (error.name === "ValidationError") {
-      res.status(422);
-    }
-    next(error);
+    console.log(error);
   }
 });
 
+app.delete("/students/:id", async (req, res, next) => {
+  const id = req.params.id;
+
+  try {
+    student
+      .remove({ _id: id })
+      .exec()
+      .then(data => {
+        res.json(data);
+      });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.post("/students", async (req, res, next) => {
+  const logs = new student({
+    _id: mongoose.Types.ObjectId(),
+    name: req.body.name,
+    birthday: req.body.birthday,
+    address: req.body.address,
+    zipcode: req.body.zipcode,
+    city: req.body.city,
+    phone: req.body.phone,
+    email: req.body.email,
+    course: req.body.courseid
+  });
+  logs
+    .save()
+    .then(data => {
+      console.log(data);
+      res.json(data);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
 //course
+app.get("/courses", async (req, res, next) => {
+  try {
+    await course
+      .find()
+      .select("name  student startdate enddate")
 
-// app.get("/courses", async (req, res, next) => {
-//   try {
-//     const entries = await logEntry.find();
-//     res.json({
-//       entries
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+      .then(docs => {
+        const response = {
+          count: docs.length,
+          courses: docs
+        };
+        res.json(response);
+      });
+  } catch (error) {
+    console.log(error);
+  }
+});
 
-// app.get("/courses/1", async (req, res, next) => {
-//   const id = req.params.body;
-//   id === "special"
-//     ? res.status(200).json({ message: "srudent id", id: id })
-//     : res.status(200).json({ message: "you pass the id" });
-// });
+app.get("/courses/:id", async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    course
+      .findById(id)
+      .select("name  student startdate enddate")
+      .exec()
+      .then(data => {
+        console.log(data);
+        res.json(data);
+      });
+  } catch (error) {
+    console.log(error);
+  }
+});
 
-// app.put("/courses/1", async (req, res, next) => {
-//   res.status(200).json({
-//     message: "updated product"
-//   });
-// });
+app.put("/courses/:id", async (req, res, next) => {
+  const id = req.params.id;
+  const update = {};
+  for (const datas of req.body) {
+    update[datas.updateData] = datas.value;
+  }
+  try {
+    course
+      .update({ _id: id }, { $set: update })
+      .exec()
+      .then(data => {
+        res.json(data);
+      });
+  } catch (error) {
+    console.log(error);
+  }
+});
 
-// app.delete("/courses/1", async (req, res, next) => {
-//   res.status(200).json({
-//     message: "updated product"
-//   });
-// });
+app.delete("/courses/:id", async (req, res, next) => {
+  const id = req.params.id;
 
-// app.post("/courses", async (req, res, next) => {
-//   try {
-//     const logs = new logEntry(req.body);
-//     const entry = await logs.save();
-//     res.json(entry);
-//   } catch (error) {
-//     if (error.name === "ValidationError") {
-//       res.status(422);
-//     }
-//     next(error);
-//   }
-// });
+  try {
+    course
+      .remove({ _id: id })
+      .exec()
+      .then(data => {
+        res.json(data);
+      });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.post("/courses", async (req, res, next) => {
+  const logs = new course({
+    _id: mongoose.Types.ObjectId(),
+    name: req.body.name,
+    startdate: req.body.startdate,
+    enddate: req.body.enddate
+  });
+  logs
+    .save()
+    .then(data => {
+      console.log(data);
+      res.json(data);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`🚀 App is listening at port ${port}!`));

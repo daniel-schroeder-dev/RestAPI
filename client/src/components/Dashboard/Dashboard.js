@@ -3,6 +3,9 @@ import "./Dashboard.css";
 import dp from "./logo/dp.png";
 import Datatable from "../Datatable/Datatable";
 import Addstudent from "../Addstudent/Addstudent";
+import Courses from "../courses/Courses";
+import StudentInfo from "../StudentsInfo/StudentInfo";
+import UpdateStudent from "../UpdateStudent/UpdateStudent";
 import { Layout, Avatar, Menu, Breadcrumb } from "antd";
 import Title from "antd/lib/typography/Title";
 const { Header, Footer, Sider, Content } = Layout;
@@ -13,7 +16,8 @@ function Dashboard() {
     table: false,
     add: false,
     course: false,
-    info: false
+    info: false,
+    update: false
   });
 
   const onCollapse = collapsed => {
@@ -28,6 +32,7 @@ function Dashboard() {
       add: false,
       course: false,
       info: false,
+      update: false,
       [event.key]: !state[event.key]
     });
   };
@@ -59,11 +64,14 @@ function Dashboard() {
               <Menu.Item key="add">
                 <span className="nav-text">Add student</span>
               </Menu.Item>
-              <Menu.Item key="course">
-                <span className="nav-text">Course</span>
+              <Menu.Item key="update">
+                <span className="nav-text">Update data</span>
               </Menu.Item>
               <Menu.Item key="info">
                 <span className="nav-text">Information table</span>
+              </Menu.Item>
+              <Menu.Item key="course">
+                <span className="nav-text">Course</span>
               </Menu.Item>
             </Menu>
           </Sider>
@@ -76,6 +84,9 @@ function Dashboard() {
               <div style={{ background: "#fff", padding: 24, minHeight: 580 }}>
                 {state.table && <Datatable />}
                 {state.add && <Addstudent />}
+                {state.update && <UpdateStudent />}
+                {state.course && <Courses />}
+                {state.info && <StudentInfo />}
               </div>
             </Content>
             <Footer style={{ textAlign: "center" }}>Copy right-alakdam</Footer>

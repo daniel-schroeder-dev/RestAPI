@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { createStudent } from "../Api/Api";
-function Addstudent() {
+
+function UpdateStudent() {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
   const [state, setState] = useState({
@@ -22,30 +22,6 @@ function Addstudent() {
 
   const handleSubmit = async e => {
     //e.preventDefault();
-    setLoading(true);
-    try {
-      await createStudent({
-        name: state.name,
-        birthday: state.birthday,
-        address: state.address,
-        zipcode: state.zipcode,
-        city: state.city,
-        phone: state.phone,
-        email: state.email
-      });
-    } catch (error) {
-      setError(error.message);
-    }
-    setLoading(false);
-    setState({
-      name: "",
-      birthday: "",
-      address: "",
-      zipcode: "",
-      city: "",
-      phone: "",
-      email: ""
-    });
   };
 
   return (
@@ -151,7 +127,7 @@ function Addstudent() {
               name="action"
               disabled={loading}
             >
-              {loading ? "Loading..." : "Save"}
+              {loading ? "Loading..." : "Update"}
             </button>
           </form>
         </div>
@@ -160,4 +136,4 @@ function Addstudent() {
   );
 }
 
-export default Addstudent;
+export default UpdateStudent;
